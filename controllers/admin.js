@@ -1,5 +1,6 @@
 const User=require('../models/user');
 const bcrypt=require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.insertUser = async (req, res, next) => {
   try{
@@ -39,3 +40,36 @@ exports.getUser= async (req,res,next)=>{
     console.log('Something went wrong',err)
   }
 }
+function generateAccessToken(id, name){
+    return jwt.sign({userId:id, name:name},'secretkey')
+  }
+  exports.loginUser = async (req, res, next) => {
+    try{
+      var myObj=req.body; 
+      const user= await User.findAll({
+        where:{
+            email : myObj.email
+        }
+    })
+       if(user[0]==undefined){
+        res.status(404).json({message:'User does not exist'})
+    }
+    else{
+        var pass= user[0].password
+        bcrypt.compare(myObj.password,pass,(err,result)=>{
+          if(err){
+            res.status(500).json({message:'Something went wrong'})
+          }
+          if(result===true){
+            res.status(200).json({message:'Logged in successfully', token: generateAccessToken(user[0].id, user[0].name)})
+          }
+          else{
+            res.status(401).json({message:'Password  incorrect'}) 
+          }
+        })  
+    }            
+    }
+    catch(err){
+      console.log('Something went wrong',err)
+    }
+   };
