@@ -41,7 +41,7 @@ exports.getUser= async (req,res,next)=>{
   }
 }
 function generateAccessToken(id, name){
-    return jwt.sign({userId:id, name:name},'secretkey')
+    return jwt.sign({userId:id, name:name},process.env.TOKEN_SECRET)
   }
   exports.loginUser = async (req, res, next) => {
     try{
