@@ -17,7 +17,7 @@ exports.insertmessage = async (req, res, next) => {
   
   exports.getmessages= async (req,res,next)=>{
     try{
-        var lastmessageid=req.params.lastmessageid;
+        var lastmessageid=req.query.lastmessageid;
         if(lastmessageid==undefined){
             lastmessageid=0;
         }
