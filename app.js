@@ -5,8 +5,11 @@ const sequelize = require('./util/database');
 const cors = require('cors');
 const adminRoutes = require('./routes/admin');
 const messagesRoutes = require('./routes/messages');
+const groupRoutes = require('./routes/group');
 const User=require('./models/user')
 const Message=require('./models/message')
+const Group=require('./models/group')
+const Usergroup=require('./models/usergroup')
 
 const app = express();
 app.use(
@@ -18,9 +21,13 @@ app.use(
 app.use(bodyParser.json({ extended: false }));
 app.use('/admin', adminRoutes);
 app.use('/chat',messagesRoutes);
+app.use('/group',groupRoutes);
 
 User.hasMany(Message);
 Message.belongsTo(User);
+Group.belongsTo(User,{foreignKey:'adminId'});
+Group.belongsToMany(User,{through:Usergroup});
+User.belongsToMany(Group,{through:Usergroup});
 // sequelize.sync({force:true})
 sequelize.sync()
 .then(result=>{
