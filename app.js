@@ -23,11 +23,10 @@ app.use('/admin', adminRoutes);
 app.use('/chat',messagesRoutes);
 app.use('/group',groupRoutes);
 
-User.hasMany(Message);
-Message.belongsTo(User);
-Group.belongsTo(User,{foreignKey:'adminId'});
 Group.belongsToMany(User,{through:Usergroup});
 User.belongsToMany(Group,{through:Usergroup});
+Message.belongsTo(User);
+Message.belongsTo(Group);
 // sequelize.sync({force:true})
 sequelize.sync()
 .then(result=>{

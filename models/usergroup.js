@@ -4,7 +4,7 @@ const sequelize = require('../util/database');
 
 
 const Usergroup = sequelize.define('usergroup', {
- hasjoined: Sequelize.BOOLEAN
+ role: Sequelize.STRING
 });
 
 module.exports = Usergroup;

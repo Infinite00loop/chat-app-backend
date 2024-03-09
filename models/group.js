@@ -13,9 +13,6 @@ const Group = sequelize.define('group', {
   grpname: {
     type: Sequelize.TEXT,
     allowNull: false
-  },
-  uuid:{
-    type: Sequelize.TEXT
   }
  
 });
