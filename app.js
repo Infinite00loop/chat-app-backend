@@ -6,6 +6,7 @@ const cors = require('cors');
 const adminRoutes = require('./routes/admin');
 const messagesRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/group');
+const inviteRoutes = require('./routes/invite');
 const User=require('./models/user')
 const Message=require('./models/message')
 const Group=require('./models/group')
@@ -22,6 +23,7 @@ app.use(bodyParser.json({ extended: false }));
 app.use('/admin', adminRoutes);
 app.use('/chat',messagesRoutes);
 app.use('/group',groupRoutes);
+app.use('/invite',inviteRoutes);
 
 Group.belongsToMany(User,{through:Usergroup});
 User.belongsToMany(Group,{through:Usergroup});
