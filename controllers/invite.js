@@ -13,7 +13,7 @@ exports.invitemember = async (req, res, next) => {
         console.log('API Key:', process.env.API_KEY);
         apiKey.apiKey=process.env.API_KEY
         const tranEmailApi=new Sib.TransactionalEmailsApi();
-        const hostname=(req.hostname==='localhost'?'127.0.0.1:5000':req.hostname)
+        const hostname=(req.hostname==='localhost'?'127.0.0.1:3000':req.hostname)
         const url=`http://${hostname}/invite/joingroup/`+groupid;
         console.log(url)
         const sender={

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">    
+    <title>Document</title>
+    <style>
+    .form-container {
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+        width: 300px; 
+        position: absolute;
+        top: 20%;
+        right: 50px; 
+        transform: translate(0, -50%);
+    }
+
+    .btn .form-group{
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        button{
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h1{
+            text-align:center ;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        th {
+            text-align: center;
+            font-size: 20px;
+        }
+        .member-left-margin{
+            margin-left: 11%;
+        }
+        .td-center {
+            font-size: 10px;
+            text-align:center ;
+        }
+        .td-right {
+            font-size: 20px;
+            text-align:right ;
+        }
+        .td-left {
+            font-size: 20px;
+            text-align:left ;
+        }
+        .container-flex {
+            padding-bottom: 60px;
+        }
+        .group {
+            display:flex;
+        }
+        .make-admin-button,
+        .remove-button {
+            margin-left: 10px; 
+        }
+
+        .member-item button {
+            vertical-align: middle;
+        }
+        .exit-group-text {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="col-auto">
+            <button id="showMembersButton" class="btn btn-primary" data-toggle="modal" data-target="#membersModal">Show Members</button>
+        </div>
+        <div class="col">
+            <h1 id="grpname" class="heading text-center"></h1>
+        </div>
+        <div class="col-auto">
+            <button id="invite" class="btn btn-primary" data-toggle="modal" data-target="#inviteModal" style="display: none;">Invite Members</button>
+        </div>
+    </div>
+    <div class="container-flex">
+        <table id='chatTable' class="table">
+            <tbody id="tabledata">
+            </tbody>
+        </table>
+        <footer>
+            <form class="form-inline">
+                <div class="form-group mr-2">
+                    <input id="idk2" type="text" placeholder="Type here......">
+                </div>
+                <button id="idk3" class="btn btn-primary" onclick="send(event)">Send</button>
+            </form>
+        </footer>
+    </div>
+    <div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inviteModalLabel">Invite Members</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="inviteForm">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="idk4" placeholder="Enter email">
+                        </div>
+                        <button type="button" class="btn btn-primary " data-dismiss="modal" onclick="sendInvite(event)">Send Invite</button>                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="membersModal"  tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Group Members</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="membersList">
+                </div>
+                <div class="modal-footer">
+                    
+                    <span id="exitGroupLink" class="exit-group-text">Exit Group</span>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="chat.js"></script>    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

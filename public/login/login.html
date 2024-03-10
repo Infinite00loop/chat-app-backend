@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">    
+    <style>
+
+        .form-container {
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .buttonStyle {
+            transition-duration: 0.4s;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .buttonStyle:hover {
+            background-color: #0056b3;
+        }
+        h1{
+            text-align:center ;
+        }
+        label{
+            margin-left: 1%;
+        }  
+        .group-name {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container">
+                    <form id="form" action="#" class="p-4">
+                        <h1 class="text-center mb-4">Log in</h1>
+                        <div class="form-group">
+                            <input type="email" name="email" id="idx1" class="form-control" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="password" id="idx2" class="form-control" placeholder="Password" required>
+                        </div>
+                        <button class="btn btn-primary btn-block font-weight-bold buttonStyle" onclick="onlogin(event)">Login</button>
+                        <p class="mt-3 text-center">New user? <a id="signuplink" href="#">Sign Up</a></p>                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="groupInvitationModal" tabindex="-1" role="dialog" aria-labelledby="groupInvitationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="group-name">
+                        <h2 id="groupNameSpan"></h2>
+                    </div>                    
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>You are invited to join this group. Please login to join.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="login.js"></script>
+</body>
+</html>
