@@ -1,4 +1,6 @@
 require('dotenv').config();
+const socketIo=require('socket.io');
+const http=require('http')
 const path= require('path');
 const fs= require('fs')
 const helmet= require('helmet');
@@ -23,12 +25,13 @@ const Usergroup=require('./models/usergroup')
 
 const app = express();
 app.use(express.static('public'));
-app.use(
-    cors({
-        // origin: "http://127.0.0.1:5500",
-        methods: ["GET", "POST", "PUT", "DELETE"]
-    })
-);
+// app.use(
+//     cors({
+//         // origin: "http://127.0.0.1:5500",
+//         methods: ["GET", "POST", "PUT", "DELETE"]
+//     })
+// );
+app.use(cors());
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}));
@@ -46,10 +49,19 @@ Group.belongsToMany(User,{through:Usergroup});
 User.belongsToMany(Group,{through:Usergroup});
 Message.belongsTo(User);
 Message.belongsTo(Group);
+const server = http.createServer(app);
+const io=socketIo(server);
+
+io.on('connection',(socket)=>{
+    console.log('hi')
+    socket.on('message',()=>{
+        io.emit('message')
+    })
+})
 // sequelize.sync({force:true})
 sequelize.sync()
 .then(result=>{
     //console.log(result);
-    app.listen(process.env.PORT_NO || 3000);
+    server.listen(process.env.PORT_NO || 3000);
 })
 .catch(err=>console.log(err));

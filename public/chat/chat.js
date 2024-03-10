@@ -5,10 +5,12 @@ const groupname=localStorage.getItem('groupname')
 const invitebutton=document.getElementById('invite');
 const groupheading=document.getElementById('grpname')
 let isAdmin=false;
+const socket = io();
+socket.on('message', () => {
+    console.log("hi")
+    getChats();
+});
 groupheading.textContent=groupname
-// setInterval(()=>{
-//     getChats()
-// },3000);
 window.addEventListener('DOMContentLoaded',async ()=>{
     const response=await axios.get(`${api_endpoint}group/isgroupadmin`,{headers:{"authorization": token,"groupauthorize": grouptoken}});
     if(response.data.isAdmin){
@@ -71,8 +73,8 @@ async function send(e){
         chat: chat_,
         typeofrequest: '2'
     },{headers:{"authorization": token, "groupauthorize":grouptoken}})
-    getChats();
- }
+    socket.emit('message');
+}
  catch(err){
     console.log('Something went wrong ', err);
  }
