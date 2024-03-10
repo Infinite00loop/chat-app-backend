@@ -31,4 +31,21 @@ const authenticategroup= async (req, res, next) =>{
     console.log('Something went wrong',err)
   }
 }
-module.exports ={ authenticate, authenticategroup};
+const authenticategroupadmin= async (req, res, next) =>{
+  try{
+      const groups = await req.user.getGroups({
+        through: {where: {groupId: req.group.id,role: 'admin'}}
+      });
+      if(groups.length>0){
+        req.isAdmin=true;
+      }
+      else{
+        req.isAdmin=false;
+      }
+      next();
+  }
+  catch(err){
+    console.log('Something went wrong',err)
+  }
+}
+module.exports ={ authenticate, authenticategroup, authenticategroupadmin};

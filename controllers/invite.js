@@ -3,10 +3,7 @@ const Group=require('../models/group')
 const Message=require('../models/message');
 exports.invitemember = async (req, res, next) => {
     try{
-        const groups = await req.user.getGroups({
-            through: {where: {groupId: req.group.id,role: 'admin'}}
-        });
-        if(groups.length==0){
+        if(!req.isAdmin){
             res.json({message : "You are not admin of the group. Please don't be oversmart!"})
         }
         const memberemail=req.body.email;
