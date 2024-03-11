@@ -3,9 +3,7 @@ const token=localStorage.getItem('token');
 const urlParams = new URLSearchParams(window.location.search);
 const groupid = urlParams.get('groupid');
 const groupname = urlParams.get('groupname');
-// setInterval(()=>{
-//     getChats()
-// },3000);
+
 window.addEventListener('DOMContentLoaded',()=>{
     if (groupname) {
         const groupNameSpan = document.getElementById('groupNameSpan');
@@ -14,56 +12,78 @@ window.addEventListener('DOMContentLoaded',()=>{
     }
     getGroups();
 })
+
 async function getGroups(){
     const response=await axios.get(`${api_endpoint}group/get-groups`,{headers:{"authorization": token}});
     const groups=response.data;
-    const groupCardsContainer = document.getElementById('groupCards');
-    groupCardsContainer.innerHTML = '';
+    console.log(groups)
+    const groupList = document.getElementById('groupList');
+    groupList.innerHTML = '';
 
     groups.forEach(group => {
         const groupCard = createGroupCard(group);
-        groupCardsContainer.appendChild(groupCard);
+        groupList.appendChild(groupCard);
+        const horizontalLine = document.createElement('hr');
+        horizontalLine.style.border = 'none';
+        horizontalLine.style.borderTop = '0.5px solid white';
+        horizontalLine.style.margin = '2px 0'; 
+        groupList.appendChild(horizontalLine);
     });
 }
 
 function createGroupCard(group) {
     const cardDiv = document.createElement('div');
-    cardDiv.classList.add('card', 'm-2', 'p-3', 'border', 'rounded');
+    cardDiv.classList.add('card', 'p-2', 'border', 'rounded','whatsapp-background');
 
     const groupNameHeader = document.createElement('h5');
     groupNameHeader.textContent = group.grpname;
     groupNameHeader.classList.add('card-title');
     cardDiv.appendChild(groupNameHeader);
 
-    const enterGroupButton = document.createElement('button');
-    enterGroupButton.textContent = 'Enter Group';
-    enterGroupButton.classList.add('btn', 'btn-primary', 'mt-2');
-    enterGroupButton.addEventListener('click', () => enterGroup(group.id, group.grpname)); // Assuming group has an ID
-    cardDiv.appendChild(enterGroupButton);
+    cardDiv.addEventListener('click', () => {
+        cardDiv.classList.toggle('selected');
+        enterGroup(group.id, group.grpname)
+    });
+
 
     return cardDiv;
 }
 
 async function enterGroup(groupId,groupName) {
+    console.log(groupName)
     localStorage.setItem('grouptoken', groupId)
     localStorage.setItem('groupname', groupName)
-    window.location.href=`../chat/chat.html`
+    
+    loadChat(groupId, groupName);
+    
 }
+
+function loadChat(groupId, groupName) {
+
+    document.getElementById('chatContainer').style.display = 'block';
+
+    const chatContainer = document.getElementById('chatContainer');
+    chatContainer.innerHTML = `
+        <iframe src="../chat/chat.html" width="100%" height="100%" frameborder="1"></iframe>
+    `;
+}
+
 async function creategroup(e){
     try{
         e.preventDefault();
        const grpname_=document.getElementById('idk4').value;
        await axios.post(`${api_endpoint}group/create-group`,{
            grpname: grpname_
-       },{headers:{"authorization": token}})
+       },{headers:{"authorization": token}});
        getGroups();
-       alert('group created successfully');
+       alert("Group created successfully");
     }
     catch(err){
        console.log('Something went wrong ', err);
     }
-}
-function canceljoin(e){
+   }
+
+   function canceljoin(e){
     e.preventDefault();
     window.location.href=`..${window.location.pathname}`
    }
@@ -77,7 +97,6 @@ function canceljoin(e){
         getGroups();
         alert(response.data.message)
         window.location.href=`..${window.location.pathname}`
-
     }
     catch(err){
         console.log('Something went wrong ', err);

@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">    
     <title>Document</title>
     <style>
+    body {
+        background-color: #202a25; 
+        
+    }
     .form-container {
         border-radius: 15px;
         padding: 20px;
@@ -68,50 +72,123 @@
         .container-flex {
             padding-bottom: 60px;
         }
-        .group {
+        .group{
             display:flex;
         }
         .group-name {
             text-align: left;
             margin-bottom: 20px;
+        } 
+        #groupList {
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar {
+            background-color: #202a25;
+            position: fixed;
+            top: 10%;
+            left: 0;
+            width: 150px; 
+            height: 100%;
+            overflow-y: auto; 
+            border-right: 1px solid #ccc; 
+        }
+        .main-content {
+            position: absolute;
+            top: 0;
+            left: 150px; 
+            right: 0;
+            bottom: 0;
+            padding: 10px; 
+        }      
+        .card {
+            padding: 10px;
+            margin: 5px;
+            background-color: #ffffff; 
+            border: 1px solid #dddddd; 
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+        }
+
+        .card:hover {
+            background-color: #f0f0f0;
+        }  
+        .card-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333333; 
+        }
+        .card.whatsapp-background {
+            background: linear-gradient(to right, #34af23, #46c646); 
+            color: #ffffff; 
+        }
+        .card.whatsapp-background {
+            border: none;
+        }
+        .selected {
+            border-color: red; 
+            transition: border-color 0.3s ease; 
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    
 </head>
 <body>
-    <h1>Chat App</h1>
-    <div class="form-container">
-        <form id="form" action="#" class="p-3">
-            <h2 class="text-center mb-4">Create New Group</h2>
-            <div class="form-group">
-                <input type="text" id="idk4" class="form-control" placeholder="Group Name" required>
-            </div>
-            <button class="btn btn-primary btn-block font-weight-bold buttonStyle" onclick="creategroup(event)">Create</button>
-        </form>
-    </div> 
-    <div id="groupCards" class="group container-flex">
-        <div class="modal fade" id="groupInvitationModal" tabindex="-1" role="dialog" aria-labelledby="groupInvitationModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="group-name">
-                            <h2 id="groupNameSpan"></h2>
-                        </div>                    
-                        <button type="button" class="close" onclick="canceljoin(event)" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>You are invited to join this group</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="beAmember(event)" data-dismiss="modal">Join</button>
-                        <button type="button" class="btn btn-secondary" onclick="canceljoin(event)" data-dismiss="modal">Cancel</button>
-                    </div>
+    
+    <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#createGroupModal">Create New Group</button>
+
+    <div class="sidebar">
+        <div id="groupList" >
+        </div>
+    </div>
+    
+    <div id="chatContainer"  class="main-content" style="display: none;">
+    </div>
+    <div class="modal fade" id="groupInvitationModal" tabindex="-1" role="dialog" aria-labelledby="groupInvitationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="group-name">
+                        <h2 id="groupNameSpan"></h2>
+                    </div>                    
+                    <button type="button" class="close" onclick="canceljoin(event)" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>You are invited to join this group</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="beAmember(event)" data-dismiss="modal">Join</button>
+                    <button type="button" class="btn btn-secondary" onclick="canceljoin(event)" data-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createGroupModalLabel">Create New Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form" action="#" class="p-3">
+                        <div class="form-group">
+                            <input type="text" id="idk4" class="form-control" placeholder="Group Name" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="creategroup(event)" data-dismiss="modal">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script src="../config.js"></script>
     <script src="groups.js"></script>    

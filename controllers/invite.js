@@ -43,7 +43,7 @@ exports.invitemember = async (req, res, next) => {
 exports.joingroup = async (req, res, next) => {
     try{
         const uuid=req.params.uuid;
-        const hostname=(req.hostname==='127.0.0.1'?'127.0.0.1:5500':req.hostname)
+        const hostname=(req.hostname==='localhost'?'localhost:3000':req.hostname)
         const group=await Group.findOne({
             where:{
                 uuid:uuid
