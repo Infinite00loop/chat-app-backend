@@ -10,6 +10,45 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const cors = require('cors');
+const cron = require('cron');
+const Sequelize=require('sequelize');
+const nightlyJob = new cron.CronJob('0 0 * * *', async () => {
+    try {
+      // Find messages older than one minute
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const oldMessages = await Message.findAll({
+        where: {
+          createdAt: {
+            [Sequelize.Op.lt]: oneDayAgo,
+          },
+        },
+      });
+  
+      // Move old messages to ArchivedMessage table
+      await Archivedmessage.bulkCreate(oldMessages.map(message => ({
+        id:message.id,
+        userId: message.userId,
+        groupId: message.groupId,
+        chat: message.chat,
+        typeofrequest: message.typeofrequest,
+        createdAt: message.createdAt,
+        updatedAt: message.updatedAt,
+      })));
+  
+      // Delete old messages from Message table
+      await Message.destroy({
+        where: {
+          createdAt: {
+            [Sequelize.Op.lt]: oneMinuteAgo,
+          },
+        },
+      });
+      console.log('Cron job ran successfully at:', new Date());
+    } catch (error) {
+      console.error('Error running cron job:', error);
+    }
+  }, null, true, 'UTC');
+  nightlyJob.start();
 const accessLogStream= fs.createWriteStream(
     path.join(__dirname, 'access.log'),
     {flags: 'a'}
@@ -22,6 +61,7 @@ const User=require('./models/user')
 const Message=require('./models/message')
 const Group=require('./models/group')
 const Usergroup=require('./models/usergroup')
+const Archivedmessage=require('./models/archivedmessage')
 
 const app = express();
 app.use(express.static('public'));
@@ -49,6 +89,8 @@ Group.belongsToMany(User,{through:Usergroup});
 User.belongsToMany(Group,{through:Usergroup});
 Message.belongsTo(User);
 Message.belongsTo(Group);
+Archivedmessage.belongsTo(User);
+Archivedmessage.belongsTo(Group);
 const server = http.createServer(app);
 const io=socketIo(server);
 
