@@ -23,17 +23,13 @@ async function getGroups(){
     groups.forEach(group => {
         const groupCard = createGroupCard(group);
         groupList.appendChild(groupCard);
-        const horizontalLine = document.createElement('hr');
-        horizontalLine.style.border = 'none';
-        horizontalLine.style.borderTop = '0.5px solid white';
-        horizontalLine.style.margin = '2px 0'; 
-        groupList.appendChild(horizontalLine);
+       
     });
 }
 
 function createGroupCard(group) {
     const cardDiv = document.createElement('div');
-    cardDiv.classList.add('card', 'p-2', 'border', 'rounded','whatsapp-background');
+    cardDiv.classList.add('card', 'p-2', 'rounded','whatsapp-background');
 
     const groupNameHeader = document.createElement('h5');
     groupNameHeader.textContent = group.grpname;
@@ -41,6 +37,13 @@ function createGroupCard(group) {
     cardDiv.appendChild(groupNameHeader);
 
     cardDiv.addEventListener('click', () => {
+        const groupList = document.getElementById('groupList');
+        const allCards = groupList.querySelectorAll('.card');
+        allCards.forEach((card) => {
+            if (card !== cardDiv) {
+                card.classList.remove('selected');
+            }
+        });
         cardDiv.classList.toggle('selected');
         enterGroup(group.id, group.grpname)
     });

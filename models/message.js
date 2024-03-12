@@ -17,7 +17,8 @@ const Message = sequelize.define('message', {
   typeofrequest: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
+  fileurl: {type: Sequelize.TEXT}
 });
 
 module.exports = Message;

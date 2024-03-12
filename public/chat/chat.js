@@ -1,3 +1,4 @@
+const chatCards = document.getElementById('chatCards');
 const tabledata=document.getElementById('tabledata');
 const token=localStorage.getItem('token');
 const grouptoken=localStorage.getItem('grouptoken')
@@ -22,7 +23,7 @@ window.addEventListener('DOMContentLoaded',async ()=>{
 })
 
 async function getChats(){
-    tabledata.innerHTML='';
+    chatCards.innerHTML='';
     const localmessages=JSON.parse(localStorage.getItem(groupname));
     var lastmessageid;
     if(localmessages && localmessages.length>0){
@@ -42,43 +43,86 @@ async function getChats(){
     }
 }
 
-function showChats(myObj){
+function showChats(myObj) {
     var history=''
-    var newRow=document.createElement("tr");
-    var newCell=document.createElement("td");
+    const card = document.createElement('div');
+    card.classList.add('custom-card');
+
+    const cardBody = document.createElement('div');
+
+    const cardText = document.createElement('p');
+    cardText.classList.add('card-text');
+
     if(myObj.typeofrequest=='1' || myObj.typeofrequest=='3'){
         history=myObj.name+' '+myObj.chat;
-        newCell.className="td-center"
+        card.classList.add("align-center");
     }
-    else if(myObj.typeofrequest=='2'){
+    else if(myObj.typeofrequest=='2' || myObj.typeofrequest=='4'){
         history=myObj.name+' : '+myObj.chat;
         if(myObj.name=='You'){
-            newCell.className="td-right"
+            card.classList.add("align-right");
         }
         else{
-            newCell.className="td-left"
+            card.classList.add("align-left");
         }
+        cardBody.classList.add('custom-card-body');
+        card.style.border = '1px solid #ccc';
     }
-    newCell.textContent=history;
-    newRow.appendChild(newCell);
-    tabledata.appendChild(newRow);
+    if(myObj.typeofrequest=='4'){
+        var chatContainer = document.createElement("div");
+        chatContainer.className = "chat-container";
+        const img = document.createElement('img');
+        img.src = myObj.fileurl;
+        img.style.maxWidth = '200px';
+        var modal = document.getElementById("filemodaldiv");
+
+        var modalImg = document.getElementById("modalfile");
+        img.setAttribute('data-toggle', 'modal');
+        img.setAttribute('data-target', '#filemodaldiv');
+        img.onclick = function() {
+            modalImg.src = myObj.fileurl;
+        }
+        chatContainer.appendChild(img);
+
+        if(myObj.chat!=''){
+            var textParagraph = document.createElement('p');
+            textParagraph.textContent = history; 
+            chatContainer.appendChild(textParagraph);
+        }
+
+        cardText.appendChild(chatContainer);
+    }
+    else{
+        cardText.textContent=history;
+    }
+
+
+    cardBody.appendChild(cardText);
+    card.appendChild(cardBody);
+
+    chatCards.appendChild(card);
 }
 
 async function send(e){
- try{
-    e.preventDefault();
-    const chat_=document.getElementById('idk2').value;
-    document.getElementById('idk2').value='';
-    await axios.post(`${api_endpoint}chat/insert-message`,{
-        chat: chat_,
-        typeofrequest: '2'
-    },{headers:{"authorization": token, "groupauthorize":grouptoken}})
-    socket.emit('message');
-}
- catch(err){
-    console.log('Something went wrong ', err);
- }
-}
+    try{
+       e.preventDefault();
+       const chat_=document.getElementById('idk2').value;
+       const fileInput = document.getElementById('idk5');
+       const file = fileInput.files[0];
+       document.getElementById('idk2').value='';
+       fileInput.value = '';
+       const formData = new FormData();
+       formData.append('chat', chat_);
+       formData.append('file', file);
+       formData.append('typeofrequest', '2');
+       console.log(formData)
+       await axios.post(`${api_endpoint}chat/insert-message`,formData,{headers:{'Content-Type':'multipart/form-data',"authorization": token,"groupauthorize": grouptoken}})
+       socket.emit('message');
+    }
+    catch(err){
+       console.log('Something went wrong ', err);
+    }
+   }
 async function sendInvite(e){
     try{
         e.preventDefault();

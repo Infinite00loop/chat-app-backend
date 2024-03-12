@@ -16,7 +16,8 @@ const Archivedmessage = sequelize.define('archivedmessage', {
   typeofrequest: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
+  fileurl: {type: Sequelize.TEXT}
 });
 
 module.exports = Archivedmessage;

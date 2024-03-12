@@ -88,54 +88,47 @@
             position: fixed;
             top: 10%;
             left: 0;
-            width: 150px; 
+            width: 250px; 
             height: 100%;
             overflow-y: auto; 
-            border-right: 1px solid #ccc; 
         }
         .main-content {
             position: absolute;
             top: 0;
-            left: 150px; 
+            left: 250px; 
             right: 0;
             bottom: 0;
             padding: 10px; 
         }      
         .card {
             padding: 10px;
-            margin: 5px;
-            background-color: #ffffff; 
-            border: 1px solid #dddddd; 
+            margin: 0;
             border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+            transition: transform 0.3s ease;
+            background: linear-gradient(to right, #184e11, #071b07);
         }
 
         .card:hover {
-            background-color: #f0f0f0;
+            background: #364934;
+            transform: scale(1.5);
         }  
         .card-title {
             font-weight: bold;
             font-size: 16px;
-            color: #333333; 
-        }
-        .card.whatsapp-background {
-            background: linear-gradient(to right, #34af23, #46c646); 
-            color: #ffffff; 
-        }
-        .card.whatsapp-background {
-            border: none;
+            text-align: center;
+            color: #e2d8d8; 
         }
         .selected {
-            border-color: red; 
-            transition: border-color 0.3s ease; 
+            background: #364934; 
+            transition: transform 0.3s ease;
         }
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    
 </head>
 <body>
-    
     <button type="button" class="btn-sm btn-primary" data-toggle="modal" data-target="#createGroupModal">Create New Group</button>
 
     <div class="sidebar">
