@@ -100,8 +100,8 @@ io.on('connection',(socket)=>{
         io.emit('message')
     })
 })
-sequelize.sync({force:true})
-//sequelize.sync()
+//sequelize.sync({force:true})
+sequelize.sync()
 .then(result=>{
     //console.log(result);
     server.listen(process.env.PORT_NO || 3000);
