@@ -201,6 +201,8 @@ function showChats(myObj) {
         history=myObj.name+' : '+myObj.chat;
         if(myObj.name=='You'){
             card.classList.add("align-right");
+            cardBody.style.backgroundColor='#36135a';
+            cardBody.style.color = 'white';
         }
         else{
             card.classList.add("align-left");
