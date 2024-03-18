@@ -1,6 +1,7 @@
 const Sib=require('sib-api-v3-sdk');
 const Group=require('../models/group')
 const Message=require('../models/message');
+const User=require('../models/user');
 exports.invitemember = async (req, res, next) => {
     try{
         if(!req.isAdmin){
@@ -84,6 +85,37 @@ exports.beAmember = async (req, res, next) => {
             await message.setUser(req.user)
             await message.setGroup(group)
             res.json({message: `Joined ${group.grpname} group.`})
+        }
+    }
+    catch(err){
+      console.log('Something went wrong',err)
+      res.json({message:'Something went wrong'+err})
+    }
+};
+exports.addmember = async (req, res, next) => {
+    try{
+        if(!req.isAdmin){
+            res.json({message : "You are not admin of the group. Please don't be oversmart!"})
+        }
+        const userid=req.body.userid;
+        const user = await User.findOne({
+            where: {
+                id: userid
+            }
+        })
+        const isMember=await user.getGroups({ where: { id : req.group.id} })
+        if(isMember.length>0)(
+            res.json({message: `You are already a member of ${group.grpname} group.`})
+        )
+        else{
+            await user.addGroup(req.group,{through : {role: 'member'}})
+            const message=await Message.create({
+                chat: `added ${user.name}`,
+                typeofrequest: '1'
+            })
+            await message.setUser(req.user)
+            await message.setGroup(req.group)
+            res.json({message: `You added ${user.name}`})
         }
     }
     catch(err){

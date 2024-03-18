@@ -169,6 +169,16 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        .dropdown {
+            position: absolute;
+            top: 100%; /* Position below the input field */
+            left: 0;
+        }
+
+        .dropdown-menu {
+            display: block;
+            position: relative;
+        }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
@@ -183,6 +193,7 @@
             </div>
             <div class="col-auto">
                 <button id="invite" class="btn btn-primary" data-toggle="modal" data-target="#inviteModal" style="display: none;">Invite Members</button>
+                <button id="add" class="btn btn-primary" data-toggle="modal" data-target="#addMemberModal" >Add Members</button>
             </div>
         </div>
         <div class="container-flex">
@@ -252,6 +263,34 @@
             </div>
         </div>
     </div> 
+    <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMemberModalLabel">Add Members</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm">
+                        <div class="form-group">
+                            <label for="idk6">Name, Email or Phone:</label>
+                            <div class="d-flex">
+                                <input type="text" class="form-control" id="idk6" placeholder="Search for a name, email, or phone number">
+                                <button type="button" class="btn btn-secondary ml-2" id="idk7" data-dismiss="modal" onclick="addMember(event)">Add</button>
+                            </div>
+
+                            <div id="suggestions"></div>
+
+                        </div>
+                        <!-- <button type="button" class="btn btn-primary " data-dismiss="modal" onclick="sendInvite(event)">Send Invite</button> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <script src="../config.js"></script>

@@ -1,6 +1,8 @@
 const User=require('../models/user');
+const Group=require('../models/group')
 const bcrypt=require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 
 exports.insertUser = async (req, res, next) => {
   try{
@@ -73,3 +75,27 @@ function generateAccessToken(id, name){
       console.log('Something went wrong',err)
     }
    };
+   exports.getallusers= async (req,res,next)=>{
+    try{
+      const users=await User.findAll({
+        attributes: ['id', 'name', 'email','phone'],
+        include: [
+          {
+            model: Group,
+            attributes: [],
+            where: { id: req.group.id },
+            required: false // Use a left outer join to include users not part of the group
+          }
+        ],
+        where: {
+          '$Groups.id$': null // Users without a corresponding usergroup entry for the given group
+        }
+      })
+      console.log('users')
+      console.log(users)
+      res.json(users)     
+    }
+    catch(err){
+        console.log('Something went wrong',err)
+    }
+  }

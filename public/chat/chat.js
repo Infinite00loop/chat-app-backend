@@ -6,6 +6,8 @@ const groupname=localStorage.getItem('groupname')
 const invitebutton=document.getElementById('invite');
 const groupheading=document.getElementById('grpname')
 let isAdmin=false;
+const addMemberInput = document.getElementById('idk6');
+let userData = [];
 const socket = io();
 socket.on('message', () => {
     console.log("hi")
@@ -246,5 +248,87 @@ async function exitGroup() {
 
     } catch (error) {
         console.error('Error exiting group:', error);
+    }
+}
+async function fetchUserData() {
+    try {
+        const response = await axios.get(`${api_endpoint}admin/getallusers`,{headers:{"authorization": token,"groupauthorize": grouptoken}});
+        userData= response.data;
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        return [];
+    }
+}
+
+function filterUserData(userData, searchTerm) {
+    searchTerm = searchTerm.toLowerCase();
+    return userData.filter(user => {
+        return (
+            user.name.toLowerCase().includes(searchTerm) ||
+            user.email.toLowerCase().includes(searchTerm) ||
+            user.phone.includes(searchTerm)
+        );
+    });
+}
+
+function displaySuggestions(suggestions) {
+    const dropdown = document.getElementById('suggestions');
+    dropdown.innerHTML=''
+    dropdown.classList.add('dropdown');
+
+    const dropdownMenu = document.createElement('div');
+    dropdownMenu.classList.add('dropdown-menu', 'show');
+
+    suggestions.forEach(user => {
+        const suggestionItem = document.createElement('a');
+        suggestionItem.classList.add('dropdown-item');
+        suggestionItem.textContent = user.name+'-'+user.email;
+        suggestionItem.setAttribute('userid', user.id);
+        suggestionItem.addEventListener('click', ()=> {
+            insertMember(user.name, user.id);
+            dropdown.remove(); // Remove the dropdown after selecting a suggestion
+        });
+        dropdownMenu.appendChild(suggestionItem);
+    });
+
+    dropdown.appendChild(dropdownMenu);
+}
+function insertMember(userName, userId) {
+    addMemberInput.value = userName;
+    addMemberInput.setAttribute('userid', userId); // Attach user ID as a data attribute to input
+    alert('test')
+}
+
+document.getElementById('idk6').addEventListener('input', async function(event) {
+    const searchTerm = event.target.value.trim();
+    if (searchTerm === '') {
+        document.getElementById('suggestions').innerHTML = '';
+        return;
+    }
+
+    console.log(userData)
+    const filteredData = filterUserData(userData, searchTerm);
+    displaySuggestions(filteredData);
+});
+
+document.getElementById('add').addEventListener('click', function(e) {
+    e.preventDefault();
+    fetchUserData();
+});
+
+async function addMember(e){
+    try{
+        e.preventDefault();
+        const userid=addMemberInput.getAttribute('userid');
+        const response=await axios.post(`${api_endpoint}invite/add-member`,{
+            userid: userid
+        },{headers:{"authorization": token,"groupauthorize": grouptoken}});
+        getChats();
+        alert(response.data.message)
+
+    }
+    catch (error) {
+        console.error('Error fetching user data:', error);
+        return [];
     }
 }
