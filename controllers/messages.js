@@ -1,10 +1,12 @@
-const Sequelize = require('sequelize');
-const S3Service=require('../services/S3services')
-const fs = require('fs');
 const Message=require('../models/message');
 const User=require('../models/user');
+const Sequelize=require('sequelize');
+const sequelize = require('../util/database');
+const S3Service=require('../services/S3services')
+const fs = require('fs');
 
 exports.insertmessage = async (req, res, next) => {
+    const t=await sequelize.transaction();
     try{
         const {chat,typeofrequest}=req.body;
         const file=req.file;
@@ -27,14 +29,16 @@ exports.insertmessage = async (req, res, next) => {
             fs.unlinkSync(file.path);
             console.log(fileurl)
         }
-        const message=await Message.create(myObj)
-        await message.setUser(req.user)
-        await message.setGroup(req.group)
+        const message=await Message.create(myObj,{transaction : t})
+        await message.setUser(req.user,{transaction : t})
+        await message.setGroup(req.group,{transaction : t})
+        await t.commit();
         res.json();
     }
     catch(err){
-      console.log('Something went wrong',err)
-      res.json({message:'Something went wrong'+err})
+      await t.rollback();
+      console.log('Something went wrong',err);
+      res.json({message:'Something went wrong'+err});
     }
 };
   
@@ -49,7 +53,7 @@ exports.insertmessage = async (req, res, next) => {
                 model: User,
                 attributes: ['name'],
             }],    
-            attributes: ['id','chat', 'typeofrequest', 'userId','fileurl'],
+            attributes: ['id', 'chat', 'fileurl', 'typeofrequest', 'userId'],
             where: {
                 id: {
                     [Sequelize.Op.gt]: lastmessageid 
@@ -60,7 +64,8 @@ exports.insertmessage = async (req, res, next) => {
         }) 
         const response=messages
         .filter(message => (message.typeofrequest=='1' || message.typeofrequest=='2' || message.typeofrequest=='4' || (message.typeofrequest=='3' && req.user.id==message.userId)))
-        .map(message=>({id:message.id,
+        .map(message=>({
+            id: message.id,
             chat: message.chat,
             fileurl: message.fileurl,
             typeofrequest: message.typeofrequest,

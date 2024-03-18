@@ -31,7 +31,6 @@ async function onlogin(e){
             const res= await axios.post(`${api_endpoint}admin/login-user`,myObj)
                 alert(res.data.message)
                 localStorage.setItem('token', res.data.token)
-                const token=localStorage.getItem('token');
                 if (groupname) {
                     window.location.href= `../groups/groups.html?groupid=${groupid}&groupname=${groupname}`
                 }

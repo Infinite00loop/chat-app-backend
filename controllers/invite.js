@@ -1,7 +1,8 @@
 const Sib=require('sib-api-v3-sdk');
+const User=require('../models/user')
 const Group=require('../models/group')
 const Message=require('../models/message');
-const User=require('../models/user');
+const sequelize = require('../util/database');
 exports.invitemember = async (req, res, next) => {
     try{
         if(!req.isAdmin){
@@ -11,7 +12,6 @@ exports.invitemember = async (req, res, next) => {
         const groupid=req.group.uuid;
         const client=Sib.ApiClient.instance
         const apiKey=client.authentications['api-key']
-        console.log('API Key:', process.env.API_KEY);
         apiKey.apiKey=process.env.API_KEY
         const tranEmailApi=new Sib.TransactionalEmailsApi();
         const hostname=(req.hostname==='localhost'?'localhost:3000':req.hostname)
@@ -29,7 +29,7 @@ exports.invitemember = async (req, res, next) => {
             sender,
             to: receivers,
             subject: `Join my group`,
-            textContent:`Follow the link to join my group. {{params.joinurl}}`,
+            textContent: `Follow the link to join my group. {{params.joinurl}}`,
             params:{
                 joinurl: url,
             }
@@ -41,6 +41,7 @@ exports.invitemember = async (req, res, next) => {
       res.json({message:'Something went wrong'+err})
     }
 };
+
 exports.joingroup = async (req, res, next) => {
     try{
         const uuid=req.params.uuid;
@@ -55,6 +56,7 @@ exports.joingroup = async (req, res, next) => {
         }
         else{
             console.log("Group not found");
+            res.send('Group not found');
         }
                   
     }
@@ -63,36 +65,43 @@ exports.joingroup = async (req, res, next) => {
       res.json({message:'Something went wrong'+err})
     }
 };
+
 exports.beAmember = async (req, res, next) => {
+    const t=await sequelize.transaction();
     try{
         const groupUid=req.body.groupId;
         const group = await Group.findOne({
             where: {
                 uuid: groupUid
             }
-        })
-        const isMember=await req.user.getGroups({ where: { id : group.id} })
+        },{transaction : t})
+        const isMember=await req.user.getGroups({ where: { id : group.id} },{transaction : t})
         console.log(isMember)
-        if(isMember.length>0)(
+        if(isMember.length>0){
+            await t.commit();
             res.json({message: `You are already a member of ${group.grpname} group.`})
-        )
+        }
         else{
-            await req.user.addGroup(group,{through : {role: 'member'}})
+            await req.user.addGroup(group,{through : {role: 'member'},transaction : t})
             const message=await Message.create({
-                chat: 'joined',
+                chat: `joined`,
                 typeofrequest: '1'
-            })
-            await message.setUser(req.user)
-            await message.setGroup(group)
+            },{transaction : t})
+            await message.setUser(req.user,{transaction : t})
+            await message.setGroup(group,{transaction : t})
+            await t.commit();
             res.json({message: `Joined ${group.grpname} group.`})
         }
     }
     catch(err){
+      await t.rollback();
       console.log('Something went wrong',err)
       res.json({message:'Something went wrong'+err})
     }
 };
+
 exports.addmember = async (req, res, next) => {
+    const t=await sequelize.transaction();
     try{
         if(!req.isAdmin){
             res.json({message : "You are not admin of the group. Please don't be oversmart!"})
@@ -102,23 +111,26 @@ exports.addmember = async (req, res, next) => {
             where: {
                 id: userid
             }
-        })
-        const isMember=await user.getGroups({ where: { id : req.group.id} })
-        if(isMember.length>0)(
+        },{transaction : t})
+        const isMember=await user.getGroups({ where: { id : req.group.id} },{transaction : t})
+        if(isMember.length>0){
+            await t.commit();
             res.json({message: `You are already a member of ${group.grpname} group.`})
-        )
+        }
         else{
-            await user.addGroup(req.group,{through : {role: 'member'}})
+            await user.addGroup(req.group,{through : {role: 'member'},transaction : t})
             const message=await Message.create({
                 chat: `added ${user.name}`,
                 typeofrequest: '1'
-            })
-            await message.setUser(req.user)
-            await message.setGroup(req.group)
+            },{transaction : t})
+            await message.setUser(req.user,{transaction : t})
+            await message.setGroup(req.group,{transaction : t})
+            await t.commit();
             res.json({message: `You added ${user.name}`})
         }
     }
     catch(err){
+      await t.rollback();
       console.log('Something went wrong',err)
       res.json({message:'Something went wrong'+err})
     }
