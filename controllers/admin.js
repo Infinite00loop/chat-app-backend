@@ -79,15 +79,7 @@ function generateAccessToken(id, name){
    exports.getallusers= async (req,res,next)=>{
     try{
       const users=await User.findAll({
-        attributes: ['id', 'name', 'email','phone'],
-        include: [
-          {
-            model: Group,
-            attributes: [] ,
-            where: { id: req.group.id },
-            required: false 
-          }
-        ]
+        attributes: ['id', 'name', 'email','phone']
       })
       const existingusers=await Usergroup.findAll({where: { groupid: req.group.id}});
       const existinguserids = existingusers.map(usergroup => usergroup.userId);
