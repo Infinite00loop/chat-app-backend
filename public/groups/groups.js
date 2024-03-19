@@ -389,6 +389,7 @@ async function exitGroup() {
             const response = await axios.post(`${api_endpoint}group/exit`, {}, { headers: { "authorization": token, "groupauthorize": grouptoken }}); 
             alert(response.data.message);
             getGroups();
+            socket.emit('message');
             window.location.href='../groups/groups.html'            
         }
 
@@ -474,7 +475,7 @@ async function addMember(e){
         const response=await axios.post(`${api_endpoint}invite/add-member`,{
             userid: userid
         },{headers:{"authorization": token,"groupauthorize": grouptoken}});
-        getChats();
+        socket.emit('message');
         alert(response.data.message)
 
     }
