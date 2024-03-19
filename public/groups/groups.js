@@ -159,6 +159,9 @@ async function creategroup(e){
      }    
    }
 
+   function scrolltobottom(){
+    chatwindow.scrollTop=chatwindow.scrollHeight;
+   }
    async function getChats(){
     chatCards.innerHTML='';
     const localmessages=JSON.parse(localStorage.getItem(groupname));
@@ -181,6 +184,7 @@ async function creategroup(e){
     for(var i=0;i<messages.length;i++){
         showChats(messages[i]);
     }
+    scrolltobottom()
 }
 
 function showChats(myObj) {
@@ -262,6 +266,7 @@ function showChats(myObj) {
 
     chatCards.appendChild(card);
 }
+
 
 async function send(e){
  try{
