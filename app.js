@@ -47,8 +47,13 @@ const nightlyJob = new cron.CronJob('0 0 * * *', async () => {
     } catch (error) {
       console.error('Error running cron job:', error);
     }
-  }, null, true, 'UTC');
-  nightlyJob.start();
+  }, null, true, 'UTC'
+);
+
+
+nightlyJob.start();
+
+
 const accessLogStream= fs.createWriteStream(
     path.join(__dirname, 'access.log'),
     {flags: 'a'}

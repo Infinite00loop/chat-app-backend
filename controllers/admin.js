@@ -88,7 +88,7 @@ function generateAccessToken(id, name){
           }
         ],
         where: {
-          '$Group.id$': null // Users without a corresponding usergroup entry for the given group
+          '$Groups.id$': null // Users without a corresponding usergroup entry for the given group
         }
       })
       console.log('users')
