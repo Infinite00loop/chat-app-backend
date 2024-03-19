@@ -10,6 +10,7 @@ const addMemberInput = document.getElementById('idk6');
 const chatwindow=document.getElementById('chat-window');
 var menuIcon = document.getElementById('menuIcon');
 var menuOptions = document.getElementById('menuOptions');
+const dropdown = document.getElementById('suggestions');
 
 const inviteButton=document.getElementById('inviteButton');
 const addButton=document.getElementById('add');
@@ -418,8 +419,9 @@ function filterUserData(userData, searchTerm) {
 }
 
 function displaySuggestions(suggestions) {
-    const dropdown = document.getElementById('suggestions');
-    dropdown.innerHTML=''
+    if(dropdown){
+        dropdown.innerHTML=''
+    }
     dropdown.classList.add('dropdown');
 
     const dropdownMenu = document.createElement('div');
@@ -458,6 +460,10 @@ document.getElementById('idk6').addEventListener('input', async function(event) 
 
 document.getElementById('add').addEventListener('click', function(e) {
     e.preventDefault();
+    addMemberInput.value='';
+    if(dropdown){
+        dropdown.innerHTML=''
+    }
     fetchUserData();
 });
 
