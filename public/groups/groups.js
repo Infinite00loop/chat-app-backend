@@ -151,6 +151,7 @@ async function creategroup(e){
             groupId: groupid
         },{headers:{"authorization": token}});
         getGroups();
+        socket.emit('message');
         alert(response.data.message)
         window.location.href=`..${window.location.pathname}`
     }
@@ -222,7 +223,6 @@ function showChats(myObj) {
             const img = document.createElement('img');
             img.src = myObj.fileurl;
             img.style.maxWidth = '200px';
-            //var modal = document.getElementById("filemodaldiv");
     
             var modalImg = document.getElementById("modalfile");
             img.setAttribute('data-toggle', 'modal');
