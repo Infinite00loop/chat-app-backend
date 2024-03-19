@@ -39,7 +39,7 @@ const nightlyJob = new cron.CronJob('0 0 * * *', async () => {
       await Message.destroy({
         where: {
           createdAt: {
-            [Sequelize.Op.lt]: oneMinuteAgo,
+            [Sequelize.Op.lt]: oneDayAgo,
           },
         },
       });
@@ -71,7 +71,7 @@ app.use(express.static('public'));
 //         methods: ["GET", "POST", "PUT", "DELETE"]
 //     })
 // );
-app.use(cors());
+//app.use(cors());
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}));
@@ -92,8 +92,8 @@ Message.belongsTo(Group);
 Archivedmessage.belongsTo(User);
 Archivedmessage.belongsTo(Group);
 const server = http.createServer(app);
-const io=socketIo(server);
 
+const io=socketIo(server);
 io.on('connection',(socket)=>{
     console.log('hi')
     socket.on('message',()=>{
