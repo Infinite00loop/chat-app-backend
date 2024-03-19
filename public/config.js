@@ -1,1 +1,1 @@
-const api_endpoint='http://localhost:3000/';
+const api_endpoint='http://13.60.22.96/';
