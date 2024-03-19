@@ -77,23 +77,26 @@ exports.removemember = async (req, res, next) => {
         if(!req.isAdmin){
             res.json({message : "You are not admin of the group. Please don't be oversmart!"})
         }
-        const {id,name}=req.body;
-        const userGroupRecord = await Usergroup.findOne({ where: { UserId: id, GroupId: req.group.id } },{transaction : t});
-        if (userGroupRecord) {
-            await userGroupRecord.destroy({transaction : t});
-            const message=await Message.create({
-                chat: `removed ${name}`,
-                typeofrequest: '1'
-            },{transaction : t})
-            await message.setUser(req.user,{transaction : t})
-            await message.setGroup(req.group,{transaction : t})
-            await t.commit();
-            res.json({message: `${name} is removed.`})
-        }
         else{
-            await t.commit();
-            res.json({message: `${name} not found.`})  
-        }    
+            const {id,name}=req.body;
+            const userGroupRecord = await Usergroup.findOne({ where: { UserId: id, GroupId: req.group.id } },{transaction : t});
+            if (userGroupRecord) {
+                await userGroupRecord.destroy({transaction : t});
+                const message=await Message.create({
+                    chat: `removed ${name}`,
+                    typeofrequest: '1'
+                },{transaction : t})
+                await message.setUser(req.user,{transaction : t})
+                await message.setGroup(req.group,{transaction : t})
+                await t.commit();
+                res.json({message: `${name} is removed.`})
+            }
+            else{
+                await t.commit();
+                res.json({message: `${name} not found.`})  
+            }    
+    
+        }
     }
     catch(err){
       await t.rollback();
@@ -108,25 +111,27 @@ exports.makeadmin = async (req, res, next) => {
         if(!req.isAdmin){
             res.json({message : "You are not admin of the group. Please don't be oversmart!"})
         }
-        const {id,name}=req.body;
-        const userGroupRecord = await Usergroup.findOne({ where: { UserId: id, GroupId: req.group.id } },{transaction : t});
-        if (userGroupRecord) {
-            userGroupRecord.role='admin'
-            await userGroupRecord.save({transaction : t});
-            const message=await Message.create({
-                chat: `are now an admin`,
-                typeofrequest: '3'
-            },{transaction : t})
-            const memberToBeAdmin=await User.findOne({where:{id: id}},{transaction : t});
-            await message.setUser(memberToBeAdmin,{transaction : t})
-            await message.setGroup(req.group,{transaction : t})
-            await t.commit();
-            res.json({message: `${name} is an admin now.`})
-        }
         else{
-            await t.commit();
-            res.json({message: `${name} not found.`})  
-        }    
+            const {id,name}=req.body;
+            const userGroupRecord = await Usergroup.findOne({ where: { UserId: id, GroupId: req.group.id } },{transaction : t});
+            if (userGroupRecord) {
+                userGroupRecord.role='admin'
+                await userGroupRecord.save({transaction : t});
+                const message=await Message.create({
+                    chat: `are now an admin`,
+                    typeofrequest: '3'
+                },{transaction : t})
+                const memberToBeAdmin=await User.findOne({where:{id: id}},{transaction : t});
+                await message.setUser(memberToBeAdmin,{transaction : t})
+                await message.setGroup(req.group,{transaction : t})
+                await t.commit();
+                res.json({message: `${name} is an admin now.`})
+            }
+            else{
+                await t.commit();
+                res.json({message: `${name} not found.`})  
+            }        
+        }
     }
     catch(err){
       await t.rollback();
