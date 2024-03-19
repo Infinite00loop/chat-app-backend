@@ -197,7 +197,7 @@ function showChats(myObj) {
         history=myObj.name+' '+myObj.chat;
         card.classList.add("align-center");
     }
-    else if(myObj.typeofrequest=='2' || myObj.typeofrequest=='4'){
+    else if(myObj.typeofrequest=='2' || myObj.typeofrequest=='4' || myObj.typeofrequest=='5' || myObj.typeofrequest=='6'){
         history=myObj.name+' : '+myObj.chat;
         if(myObj.name=='You'){
             card.classList.add("align-right");
@@ -210,21 +210,39 @@ function showChats(myObj) {
         cardBody.classList.add('custom-card-body');
         card.style.border = '1px solid #ccc';
     }
-    if(myObj.typeofrequest=='4'){
+    if(myObj.typeofrequest=='4' || myObj.typeofrequest=='5' || myObj.typeofrequest=='6'){
         var chatContainer = document.createElement("div");
         chatContainer.className = "chat-container";
-        const img = document.createElement('img');
-        img.src = myObj.fileurl;
-        img.style.maxWidth = '200px';
-        //var modal = document.getElementById("filemodaldiv");
 
-        var modalImg = document.getElementById("modalfile");
-        img.setAttribute('data-toggle', 'modal');
-        img.setAttribute('data-target', '#filemodaldiv');
-        img.onclick = function() {
-            modalImg.src = myObj.fileurl;
+        if(myObj.typeofrequest=='4'){
+            const img = document.createElement('img');
+            img.src = myObj.fileurl;
+            img.style.maxWidth = '200px';
+            //var modal = document.getElementById("filemodaldiv");
+    
+            var modalImg = document.getElementById("modalfile");
+            img.setAttribute('data-toggle', 'modal');
+            img.setAttribute('data-target', '#filemodaldiv');
+            img.onclick = function() {
+                modalImg.src = myObj.fileurl;
+            }
+            chatContainer.appendChild(img);    
+        }else if(myObj.typeofrequest=='5'){
+            const video = document.createElement('video');
+            video.src = myObj.fileurl;
+            video.controls = true;
+            video.style.maxWidth = '200px';
+        
+            chatContainer.appendChild(video);
         }
-        chatContainer.appendChild(img);
+        else if(myObj.typeofrequest=='6'){
+            const audio = document.createElement('audio');
+            audio.src = myObj.fileurl;
+            audio.controls = true; 
+            audio.style.maxWidth = '200px';
+        
+            cardText.appendChild(audio);
+        }
 
         if(myObj.chat!=''){
             var textParagraph = document.createElement('p');
