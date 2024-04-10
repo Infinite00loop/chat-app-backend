@@ -1,1 +1,1 @@
-const api_endpoint='http://13.60.22.96/';
+const api_endpoint='http://16.171.142.102/';
